@@ -1,0 +1,257 @@
+use Shariq1472410
+select * from emp_details;
+INSERT INTO emp_details(id,name,age,phone,designation,salary,city,country)
+values
+(2,'sawati',21,03211234567,'sr.clerk',4500,'peshawar','pakistan'),
+(3,'abdullah',22,03331234567,'jr.clerk',4200,'larkana','pakistan'),
+(4,'ali',23,03111234567,'accountant',4000,'gujranwala','pakistan'),
+(5,'hamza',24,03191234567,'data-entry-operator',4000,'sukkur','pakistan'),
+(6,'asghar',25,03341234567,'naib-qasid',3000,'khuzdar','pakistan'),
+(7,'bilal',26,02131234567,'malhi',2500,'dadu','pakistan'),
+(8,'noman',27,03221234567,'malhi',2500,'multan','pakistan'),
+(9,'bhatti',28,03231234567,'technician',2200,'rahim yar khan','pakistan'),
+(10,'munna',29,03091234567,'sweeper',10000,'chaman','pakistan');
+
+select * from emp_details;
+select * from emp_details ORDER BY salary;
+select * from emp_details ORDER BY salary DESC;
+select * from emp_details where name='shariq' AND salary=5000;
+select * from emp_details where name='shariq' OR salary=2200;
+select * from emp_details where NOT salary=10000;
+select * from emp_details where city IN ('karachi','larkana');
+select * from emp_details where name IN ('shariq','abdullah','sawati','bhatti');
+select * from emp_details where salary BETWEEN 2200 AND 10000;
+select * from emp_details where salary NOT BETWEEN 5000 AND 10000;
+select * from emp_details where name BETWEEN 'bilal' AND 'shariq' ORDER BY name;
+select * from emp_details where city LIKE 'k%';
+select * from emp_details where city LIKE '%i';
+select * from emp_details where name LIKE '_h%';
+select * from emp_details where name NOT LIKE '_h%';
+select max(salary) AS result from emp_details;
+select min(salary) AS result from emp_details;
+select avg(salary) AS result from emp_details;
+select avg(salary) AS result from emp_details where salary>=4000;
+select sum(salary) AS result from emp_details;
+select sum(salary) AS result from emp_details where salary>=4000;
+select name,salary from emp_details where salary = (select max(salary) from emp_details);
+select count(name) AS result from emp_details;
+select count(name) AS result from emp_details where salary>2200;
+select count(*) AS result from emp_details;
+alter table emp_details alter column name varchar(50) not null;
+
+create table employees(
+ID int not null primary key,
+EmpName varchar(50) not null,
+Email varchar(50) unique,
+City varchar(50),
+Salary int
+);
+insert into employees (ID,EmpName,Email,City,Salary)
+values
+(1,'Shariq Najam','mschariquen@gmail.com','karachi',5000),
+(2,'Hamza Sawati','sawati@gmail.com','Peshawar',4500),
+(3,'Hafiz Abdullah','abdullah@gmail.com','Larkana',4400),
+(4,'Syed Ahmed','syedahmed@gmail.com','Gujranwala',4200),
+(5,'Muhammad Hamza','hamza@gmail.com','Dadu',4300),
+(6,'Bilal Ahmed','bilalahmed@gmail.com','Islamabad',4000),
+(7,'Noman Bhatti','bhatti@gmail.com','Chaman',3800),
+(8,'Asghar Ali','asghar@gmail.com','Sawat',3500),
+(9,'Muhammad Tuaha','tuaha@gmail.com','Multan',3200),
+(10,'Munna','munna@gmail.com','Lahore',4500);
+
+create table Department (
+DeptID int not null primary key,
+DeptName varchar(60) not null,
+EMP_ID int foreign key references employees(EMP_ID)
+);
+insert into Department (DeptID,DeptName,EMP_ID)
+values
+(1,'HR',1),
+(2,'Finance',2),
+(3,'Finance',3),
+(4,'HR',4),
+(5,'IT',5),
+(6,'IT',6),
+(7,'Marketing',7),
+(8,'Advertisment',8),
+(9,'Cleaning',9),
+(10,'Cleaning',10);
+SELECT * FROM employees INNER JOIN Department ON employees.EMP_ID = Department.EMP_ID;
+create table cities_tbl(
+id int primary key identity,
+name varchar(50) not null,
+);
+create table person_tbl(
+id int primary key identity,
+name varchar(50) not null,
+email varchar(60) unique,
+c_id int,
+foreign key (c_id) references cities_tbl(id)
+);
+insert into cities_tbl values ('Karachi'),('Lahore'),('Islamabad'),('Multan');
+insert into person_tbl values ('Shariq','mschariquen@gmail.com',1),('Bilal','bilal@gmail.com',3),
+('Ahmed','ahmed@gmail.com',2),('Abdullah','abdullah@gmail.com',1),('Sajid','sajid@gmail.com',4);
+select * from person_tbl
+select * from person_tbl p inner join cities_tbl c on p.c_id=c.id;
+select p.name,c.name as city from person_tbl p inner join cities_tbl c on p.c_id=c.id;
+select * from person_tbl p left join cities_tbl c on p.c_id=c.id
+select p.name, c.name as citiy from person_tbl p left join cities_tbl c on p.c_id=c.id
+
+//sub query:
+use Shariq1472410
+create table students(
+id int primary key identity,
+name varchar(50) not null,
+fees int
+)
+insert into students values ('shariq',5000),('arshaq',4500),('raahim',4300),('abdullah',4000),('abdul',3500)
+select * from students
+select max(fees) from students;
+select name,fees from students where fees = (select max(fees) from students);
+
+
+--stored procedure
+create database shariqaptech;
+use shariqaptech;
+
+create table students(
+id int primary key identity,
+name varchar(50),
+age int,
+fees int
+);
+
+insert into students values ('shariq',26,8100),('abdullah',21,4500),('nazim',22,5000);
+select * from students;
+
+--create stored procedure
+create proc fetch_data
+as
+BEGIN
+	select * from students
+END
+--execute our stored procedure
+exec fetch_data
+
+--create insert query procedure
+create proc insdata
+@name varchar(50),
+@age int,
+@fees int
+as
+BEGIN
+	insert into students values (@name,@age,@fees)
+END
+--execute insert query procedure
+exec insdata 'bilal',26,5500
+
+--All in One Procedure
+create proc all_oprt
+@id int,
+@name varchar(50),
+@age int,
+@fees int,
+@option varchar(30)
+as
+BEGIN
+	if @option = 'insert'
+	BEGIN
+		insert into students values(@name,@age,@fees);
+		select * from students;
+	END
+	else if @option = 'update'
+	BEGIN
+		update students set name = @name, age = @age, fees = @fees
+		where id = @id;
+		select * from students;
+	END
+	else if @option = 'delete'
+	BEGIN
+		delete from students where id = @id;
+		select * from students;
+	END
+	else 
+	BEGIN
+		print 'Please Enter Valid Option';
+	END
+END
+
+exec all_oprt 5,'bilal',26,5500,'delete'
+
+
+--create tables for using triggers
+use shariqaptech;
+create table std_info(
+id int primary key identity,
+name varchar(50),
+age int
+)
+create table std_backup(
+id int,
+name varchar(50),
+age int,
+history datetime,
+action varchar(50)
+)
+insert into std_info values('shariq',26),('hamza',22)
+select * from std_info;
+select * from std_backup;
+
+--Insert Trigger
+create trigger insertTrigger
+on std_info
+for insert
+as
+declare @id int;
+declare @name varchar(50);
+declare @age int;
+declare @action varchar(50);
+select @id = id from inserted;
+select @name = name from inserted;
+select @age = age from inserted;
+set @action = 'User Execute Insert Query';
+insert into std_backup values(@id,@name,@age,GETDATE(),@action);
+
+insert into std_info values('abdullah',22);
+select * from std_info;
+select * from std_backup;
+
+--Update Trigger
+create trigger updateTrigger
+on std_info
+for update
+as
+declare @id int;
+declare @name varchar(50);
+declare @age int;
+declare @action varchar(50);
+select @id = id from inserted;
+select @name = name from inserted;
+select @age = age from inserted;
+set @action = 'User Execute Update Query';
+insert into std_backup values(@id,@name,@age,GETDATE(),@action);
+
+update std_info set name = 'hafiz abdullah' where id = 3;
+
+select * from std_info;
+select * from std_backup;
+
+--Delete Trigger
+create trigger deleteTrigger
+on std_info
+for delete
+as
+declare @id int;
+declare @name varchar(50);
+declare @age int;
+declare @action varchar(50);
+select @id = id from deleted;
+select @name = name from deleted;
+select @age = age from deleted;
+set @action = 'User Execute Delete Query';
+insert into std_backup values(@id,@name,@age,GETDATE(),@action);
+
+delete from std_info where id = 2;
+
+select * from std_info;
+select * from std_backup;
